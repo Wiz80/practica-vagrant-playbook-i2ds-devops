@@ -1,0 +1,48 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Importar la clave pública de MongoDB
+    apt_key:
+      url: https://www.mongodb.org/static/pgp/server-4.4.asc
+      state: present
+
+  - name: Añadir repositorio de MongoDB
+    apt_repository:
+      repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse
+      state: present
+
+  - name: Actualizar los repositorios APT
+    apt:
+      update_cache: yes
+
+  - name: Instalar libssl
+    apt:
+      name: libssl-dev
+      state: present
+
+  - name: Instalar MongoDB Server
+    apt:
+      name: mongodb-org-server
+      state: present
+
+  - name: Instalar MongoDB Shell
+    apt:
+      name: mongodb-org-shell
+      state: present
+
+  - name: Instalar MongoDB Mongos
+    apt:
+      name: mongodb-org-mongos
+      state: present
+
+  - name: Instalar MongoDB Tools
+    apt:
+      name: mongodb-org-tools
+      state: present
+
+  - name: Asegurarse de que el servicio de MongoDB está habilitado y corriendo
+    systemd:
+      name: mongod
+      state: started
+      enabled: yes
